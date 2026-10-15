@@ -4,7 +4,6 @@ import {
   BookmarkCheck,
   ChevronLeft,
   ChevronRight,
-  Clapperboard,
   Moon,
   Search,
   Sun,
@@ -350,7 +349,7 @@ export function initChrome() {
       {
         href: u,
         class:
-          "rounded-full px-3 py-2 font-medium text-zinc-600 transition-colors hover:bg-accent/10 hover:text-accent dark:text-zinc-300",
+          "rounded-full px-3 py-2 font-semibold text-zinc-600 transition-colors hover:bg-accent/10 hover:text-accent dark:text-zinc-300",
       },
       l,
     ),
@@ -496,64 +495,60 @@ export function initChrome() {
       input.focus();
     }
   };
-  mount(
-    "#nav",
+  const nav = h(
+    "nav",
+    {
+      class:
+        "fixed inset-x-0 top-0 z-40 border-b border-zinc-200/70 bg-zinc-50/85 shadow-sm backdrop-blur-xl dark:border-white/10 dark:bg-zinc-950/80",
+      "aria-label": "Main",
+    },
     h(
-      "nav",
+      "div",
       {
         class:
-          "sticky top-0 z-40 border-b border-zinc-200/70 bg-zinc-50/85 shadow-sm backdrop-blur-xl dark:border-white/10 dark:bg-zinc-950/80",
-        "aria-label": "Main",
+          "mx-auto flex max-w-7xl flex-wrap items-center gap-x-2 gap-y-2 px-4 py-3 text-sm sm:gap-x-4",
       },
+      h(
+        "a",
+        {
+          href: "index.html",
+          class:
+            "mr-auto inline-flex items-center text-xl font-black tracking-tight sm:mr-0",
+        },
+        "Cine",
+        h("span", { class: "text-accent" }, "Vault"),
+      ),
+      ...links,
+      h(
+        "a",
+        {
+          href: "my-list.html",
+          class:
+            "rounded-full px-3 py-2 font-semibold text-zinc-600 transition-colors hover:bg-accent/10 hover:text-accent dark:text-zinc-300",
+        },
+        icon(Bookmark, "mr-1 inline size-4 align-[-3px]"),
+        "My List",
+      ),
       h(
         "div",
         {
           class:
-            "mx-auto flex max-w-7xl flex-wrap items-center gap-x-2 gap-y-2 px-4 py-3 text-sm sm:gap-x-4",
+            "relative order-3 flex w-full items-center gap-2 sm:order-none sm:ml-auto sm:w-auto",
         },
-        h(
-          "a",
-          {
-            href: "index.html",
-            class:
-              "mr-auto inline-flex items-center gap-2 text-lg font-black tracking-tight sm:mr-0",
-          },
-          h(
-            "span",
-            {
-              class:
-                "inline-flex size-9 items-center justify-center rounded-xl bg-accent text-white shadow-lg shadow-accent/25",
-            },
-            icon(Clapperboard),
-          ),
-          "Cine",
-          h("span", { class: "text-accent" }, "Vault"),
-        ),
-        ...links,
-        h(
-          "a",
-          {
-            href: "my-list.html",
-            class:
-              "rounded-full px-3 py-2 font-medium text-zinc-600 transition-colors hover:bg-accent/10 hover:text-accent dark:text-zinc-300",
-          },
-          icon(Bookmark, "mr-1 inline size-4 align-[-3px]"),
-          "My List",
-        ),
-        h(
-          "div",
-          {
-            class:
-              "relative order-3 flex w-full items-center gap-2 sm:order-none sm:ml-auto sm:w-auto",
-          },
-          icon(Search, "absolute left-3 top-1/2 size-4 -translate-y-1/2 text-zinc-400"),
-          input,
-          dd,
-          themeBtn,
-        ),
+        icon(Search, "absolute left-3 top-1/2 size-4 -translate-y-1/2 text-zinc-400"),
+        input,
+        dd,
+        themeBtn,
       ),
     ),
   );
+  mount("#nav", nav);
+  const navHost = $("#nav");
+  const syncNavHeight = () => {
+    navHost.style.height = `${nav.offsetHeight}px`;
+  };
+  syncNavHeight();
+  new ResizeObserver(syncNavHeight).observe(nav);
   mount(
     "#footer",
     h(
