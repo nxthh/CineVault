@@ -1,5 +1,5 @@
 import {Item,Detail,Episode,Page,Media,api,detail,img,titleOf,yearOf,hasToken} from './tmdb';
-import {h,$,mount,load,row,grid,card,href,getList,toggleList,inList,errorBox,skeletons} from './ui';
+import {h,$,mount,load,row,grid,card,href,getList,toggleList,inList,errorBox,skeletons,pagination} from './ui';
 import {openPlayer} from './player';
 
 const btn=(label:string,fn:()=>void,primary=false)=>{const b=h('button',{type:'button',class:`rounded-lg px-4 py-2 text-sm font-semibold ${primary?'bg-accent text-white':'border border-white/60 text-white'}`},label);b.onclick=fn;return b};
@@ -21,32 +21,32 @@ function home(){
 }
 function movies(){
  load('#c1',async()=>heroFor('movie',(await api<Page<Item>>('/movie/popular')).results[0].id,'Watch Now'));
- load('#c2',async()=>h('div',{class:'scroller flex gap-4 overflow-x-auto pb-3'},...(await api<Page<Item>>('/movie/top_rated')).results.slice(0,10).map((m,i)=>card(m,'movie',i+1))));
+ load('#c2',async()=>row((await api<Page<Item>>('/movie/top_rated')).results.slice(0,10),'movie',true));
  library();
 }
 async function library(){
- const root=$('#c3');const state={q:'',genre:'',year:'',rating:'0',sort:'popularity.desc',page:1};let items:Item[]=[];
+ const root=$('#c3');const state={q:'',genre:'',year:'',rating:'0',sort:'popularity.desc',page:1};let items:Item[]=[];let requestId=0;
  const sel=(label:string,opts:[string,string][])=>{const s=h('select',{'aria-label':label,class:'rounded border border-zinc-500/40 bg-transparent px-2 py-1 dark:bg-zinc-900'},...opts.map(([v,t])=>h('option',{value:v},t))) as HTMLSelectElement;return s};
  const q=h('input',{type:'search','aria-label':'Search library',placeholder:'Search movies…',class:'rounded border border-zinc-500/40 bg-transparent px-2 py-1'}) as HTMLInputElement;
  const g=sel('Genre',[['','All genres']]),y=sel('Year',[['','Any year'],...Array.from({length:30},(_,i)=>{const v=String(new Date().getFullYear()-i);return [v,v] as [string,string]})]);
  const r=sel('Minimum rating',[['0','Any rating'],['6','6+'],['7','7+'],['8','8+']]);
  const s=sel('Sort',[['popularity.desc','Popular'],['title','Title'],['date','Release date'],['rating','Rating']]);
  const clear=h('button',{type:'button',class:'rounded border border-zinc-500/40 px-2 py-1'},'Clear filters');
- const out=h('div'),more=h('button',{type:'button',class:'mx-auto mt-6 block rounded-lg bg-accent px-4 py-2 text-white'},'Load more');
- root.replaceChildren(h('div',{class:'mb-4 flex flex-wrap gap-2'},q,g,y,r,s,clear),out,more);
+ const out=h('div'),pager=h('div');
+ root.replaceChildren(h('div',{class:'mb-5 flex flex-wrap gap-2 rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-zinc-900/60'},q,g,y,r,s,clear),out,pager);
  try{(await api<{genres:{id:number;name:string}[]}>('/genre/movie/list')).genres.forEach(x=>g.append(h('option',{value:String(x.id)},x.name)))}catch{}
  const view=()=>{let l=[...items];if(state.q){l=l.filter(i=>(!state.year||yearOf(i)===state.year)&&(!state.genre||i.genre_ids?.includes(+state.genre))&&i.vote_average>=+state.rating)}
   if(state.sort==='title')l.sort((a,b)=>titleOf(a).localeCompare(titleOf(b)));if(state.sort==='date')l.sort((a,b)=>(b.release_date||'').localeCompare(a.release_date||''));if(state.sort==='rating')l.sort((a,b)=>b.vote_average-a.vote_average);
   out.replaceChildren(grid(l,'movie'))};
- const fetchPage=async(reset:boolean)=>{if(reset){state.page=1;items=[]}out.replaceChildren(skeletons());try{let p:Page<Item>;
+ const fetchPage=async(reset:boolean)=>{if(reset){state.page=1;items=[]}const request=++requestId;out.replaceChildren(skeletons());try{let p:Page<Item>;
   if(state.q)p=await api<Page<Item>>('/search/movie',{query:state.q,page:state.page});
   else{const sm:Record<string,string>={title:'original_title.asc',date:'primary_release_date.desc',rating:'vote_average.desc','popularity.desc':'popularity.desc'};
    const o:Record<string,string|number>={page:state.page,sort_by:sm[state.sort],'vote_average.gte':state.rating,'vote_count.gte':state.sort==='rating'?200:0};if(state.genre)o.with_genres=state.genre;if(state.year)o.primary_release_year=state.year;p=await api<Page<Item>>('/discover/movie',o)}
-  items=items.concat(p.results);more.hidden=state.page>=p.total_pages;view()}catch(e){out.replaceChildren(errorBox(e))}};
+  if(request!==requestId)return;items=p.results;view();pager.replaceChildren(pagination(state.page,Math.min(p.total_pages,500),next=>{state.page=next;fetchPage(false)}))}catch(e){if(request===requestId){out.replaceChildren(errorBox(e));pager.replaceChildren()}}};
  let tm=0;q.oninput=()=>{clearTimeout(tm);tm=window.setTimeout(()=>{state.q=q.value.trim();fetchPage(true)},400)};
  g.onchange=()=>{state.genre=g.value;fetchPage(true)};y.onchange=()=>{state.year=y.value;fetchPage(true)};r.onchange=()=>{state.rating=r.value;fetchPage(true)};s.onchange=()=>{state.sort=s.value;state.q?view():fetchPage(true)};
  clear.onclick=()=>{q.value='';g.value=y.value='';r.value='0';s.value='popularity.desc';Object.assign(state,{q:'',genre:'',year:'',rating:'0',sort:'popularity.desc'});fetchPage(true)};
- more.onclick=()=>{state.page++;fetchPage(false)};fetchPage(true)}
+ fetchPage(true)}
 function tv(){
  load('#c1',async()=>heroFor('tv',(await api<Page<Item>>('/tv/popular')).results[0].id,'Watch Series'));
  const cols:[string,Record<string,string|number>][]=[['Crime Dramas',{with_genres:80}],['Sitcoms',{with_genres:35,with_origin_country:'US'}],['Sci-Fi & Fantasy',{with_genres:10765}],['Miniseries',{with_type:2}]];

@@ -1,5 +1,9 @@
 import fs from "fs";
-const SITE = "https://example.com"; // set production domain
+const SITE =
+  process.env.SITE_URL ||
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+    : "https://example.com");
 const P = {
   index: [
     "Home",
