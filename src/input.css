@@ -5,6 +5,7 @@
 html{scroll-behavior:smooth}
 body{transition:background-color .35s ease,color .35s ease}
 body,body *{transition:background-color .3s ease,color .3s ease,border-color .3s ease}
+body>header{position:relative;z-index:50}
 body>header,body>main,body>footer{animation:fade-up .55s cubic-bezier(.2,.7,.2,1) both}
 main>section:not(:first-child){animation:fade-up .6s cubic-bezier(.2,.7,.2,1) both}
 main>section:nth-child(3){animation-delay:.08s}

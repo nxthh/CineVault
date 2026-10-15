@@ -340,14 +340,6 @@ export function initChrome() {
     } catch {}
     sync();
   };
-  const count = h("span", {
-    class: "ml-1 rounded-full bg-accent px-1.5 text-xs text-white",
-  });
-  const upd = () => {
-    count.textContent = String(getList().length);
-  };
-  upd();
-  document.addEventListener("cv-list", upd);
   const links = [
     ["index.html", "Home"],
     ["movies.html", "Movies"],
@@ -374,52 +366,113 @@ export function initChrome() {
     class:
       "absolute right-0 top-full z-50 mt-2 hidden max-h-80 w-full overflow-auto rounded-2xl border border-zinc-200 bg-white text-sm shadow-xl dark:border-white/10 dark:bg-zinc-900 sm:w-72",
     role: "listbox",
+    id: "nav-search-results",
   });
+  input.setAttribute("aria-controls", "nav-search-results");
+  input.setAttribute("aria-autocomplete", "list");
+  input.setAttribute("aria-expanded", "false");
+  let requestId = 0;
+  let shownQuery = "";
+  const findResults = async (query: string) => {
+    const r = await api<{ results: Item[] }>("/search/multi", { query });
+    return r.results
+      .filter(
+        (item): item is Omit<Item, "media_type"> & { media_type: Media } =>
+          item.media_type === "movie" || item.media_type === "tv",
+      )
+      .slice(0, 8);
+  };
+  const renderResults = (
+    query: string,
+    results: (Omit<Item, "media_type"> & { media_type: Media })[],
+  ) => {
+    shownQuery = query;
+    dd.replaceChildren(
+      ...(results.length
+        ? results.map((item) =>
+            h(
+              "li",
+              { role: "presentation" },
+              h(
+                "a",
+                {
+                  href: href(item.media_type, item.id),
+                  role: "option",
+                  class:
+                    "block px-3 py-2 hover:bg-accent/20 focus:bg-accent/20",
+                },
+                `${titleOf(item)} (${yearOf(item)})`,
+              ),
+            ),
+          )
+        : [
+            h(
+              "li",
+              { class: "px-3 py-2 text-zinc-500" },
+              `No results for "${query}"`,
+            ),
+          ]),
+    );
+    dd.classList.remove("hidden");
+    input.setAttribute("aria-expanded", "true");
+  };
+  const hideResults = () => {
+    requestId++;
+    dd.classList.add("hidden");
+    input.setAttribute("aria-expanded", "false");
+  };
   let tm = 0;
   input.oninput = () => {
     clearTimeout(tm);
     const q = input.value.trim();
     if (!q) {
-      dd.classList.add("hidden");
+      requestId++;
+      hideResults();
       return;
     }
+    const request = ++requestId;
     tm = window.setTimeout(async () => {
       try {
-        const r = await api<{ results: Item[] }>("/search/multi", { query: q });
-        const res = r.results
-          .filter((x) => x.media_type === "movie" || x.media_type === "tv")
-          .slice(0, 8);
-        dd.replaceChildren(
-          ...(res.length
-            ? res.map((x) =>
-                h(
-                  "li",
-                  { role: "option" },
-                  h(
-                    "a",
-                    {
-                      href: href(x.media_type as Media, x.id),
-                      class:
-                        "block px-3 py-2 hover:bg-accent/20 focus:bg-accent/20",
-                    },
-                    `${titleOf(x)} (${yearOf(x)})`,
-                  ),
-                ),
-              )
-            : [h("li", { class: "px-3 py-2" }, "No results")]),
-        );
+        const results = await findResults(q);
+        if (request === requestId && input.value.trim() === q)
+          renderResults(q, results);
       } catch (e) {
-        dd.replaceChildren(
-          h("li", { class: "px-3 py-2" }, (e as Error).message),
-        );
+        if (request !== requestId) return;
+        dd.replaceChildren(errorBox(e));
+        dd.classList.remove("hidden");
+        input.setAttribute("aria-expanded", "true");
       }
-      dd.classList.remove("hidden");
     }, 350);
   };
-  input.onkeydown = (e) => {
-    if (e.key === "ArrowDown")
+  input.onkeydown = async (e) => {
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
       (dd.querySelector("a") as HTMLElement | null)?.focus();
-    if (e.key === "Escape") dd.classList.add("hidden");
+    }
+    if (e.key === "Escape") hideResults();
+    if (e.key === "Enter") {
+      e.preventDefault();
+      const query = input.value.trim();
+      if (!query) return;
+      const current = dd.querySelector<HTMLAnchorElement>("a");
+      if (shownQuery === query && current) {
+        window.location.assign(current.href);
+        return;
+      }
+      const request = ++requestId;
+      try {
+        const results = await findResults(query);
+        if (request !== requestId || input.value.trim() !== query) return;
+        renderResults(query, results);
+        const first = dd.querySelector<HTMLAnchorElement>("a");
+        if (first) window.location.assign(first.href);
+      } catch (error) {
+        if (request !== requestId) return;
+        dd.replaceChildren(errorBox(error));
+        dd.classList.remove("hidden");
+        input.setAttribute("aria-expanded", "true");
+      }
+    }
   };
   dd.onkeydown = (e) => {
     const a = document.activeElement as HTMLElement;
@@ -437,6 +490,10 @@ export function initChrome() {
         (a.closest("li")?.previousElementSibling?.querySelector("a") ||
           input) as HTMLElement
       ).focus();
+    }
+    if (e.key === "Escape") {
+      hideResults();
+      input.focus();
     }
   };
   mount(
@@ -482,7 +539,6 @@ export function initChrome() {
           },
           icon(Bookmark, "mr-1 inline size-4 align-[-3px]"),
           "My List",
-          count,
         ),
         h(
           "div",
