@@ -1,7 +1,5 @@
-// Player module. No unlicensed streaming provider is integrated: it shows the official TMDB-listed
-// YouTube trailer and links to licensed "where to watch" pages. To add a licensed provider, return its embed URL from providerUrl().
 import { Detail, Media, titleOf } from "./tmdb";
-import { h, href } from "./ui";
+import { h } from "./ui";
 
 const providerUrl = (
   _t: Media,
@@ -14,10 +12,11 @@ export function openPlayer(
   d: Detail,
   type: Media,
   ep?: { season: number; episode: number; name: string },
+  onNextEpisode?: () => void,
 ) {
   const prev = document.activeElement as HTMLElement | null;
   
-  // Updated URL logic checking the media type (movie vs tv)
+  // Construct the correct embed URL for Movies or TV Shows
   const url =
     providerUrl(type, d.id, ep?.season, ep?.episode) ||
     (d?.id
@@ -26,8 +25,6 @@ export function openPlayer(
         : `https://vidsrc.sh/embed/movie/${d.id}`
       : "");
 
-  const watch = Object.values(d["watch/providers"]?.results || {})[0]?.link;
-  
   const close = () => {
     ov.remove();
     document.removeEventListener("keydown", esc);
@@ -48,7 +45,7 @@ export function openPlayer(
           allowfullscreen: "",
           class: "absolute inset-0 h-full w-full",
         });
-        const w = h(
+        return h(
           "div",
           { class: "relative aspect-video w-full bg-black" },
           h(
@@ -61,7 +58,6 @@ export function openPlayer(
           ),
           f,
         );
-        return w;
       })()
     : h(
         "p",
@@ -71,10 +67,32 @@ export function openPlayer(
 
   const closeBtn = h(
     "button",
-    { type: "button", class: "rounded bg-accent px-3 py-1 text-white" },
+    { type: "button", class: "rounded bg-accent px-3 py-1 text-white text-sm hover:opacity-90 transition" },
     "Close Player",
   );
   closeBtn.onclick = close;
+
+  const headerActions = h("div", { class: "flex items-center gap-2" });
+  
+  // Render "Next Episode" button if it's a TV show and a next episode callback is provided
+  if (type === "tv" && onNextEpisode) {
+    const nextBtn = h(
+      "button",
+      {
+        type: "button",
+        class:
+          "rounded bg-zinc-700 px-3 py-1 text-white hover:bg-zinc-600 transition text-sm font-medium",
+      },
+      "Next Episode",
+    );
+    nextBtn.onclick = () => {
+      ov.remove();
+      onNextEpisode();
+    };
+    headerActions.append(nextBtn);
+  }
+  
+  headerActions.append(closeBtn);
 
   const ov = h(
     "div",
@@ -87,16 +105,16 @@ export function openPlayer(
     },
     h(
       "div",
-      { class: "w-full max-w-3xl rounded-lg bg-white p-4 dark:bg-zinc-900" },
+      { class: "w-full max-w-4xl rounded-lg bg-white p-4 dark:bg-zinc-900 shadow-2xl" },
       h(
         "div",
-        { class: "mb-2 flex items-center justify-between gap-2" },
+        { class: "mb-3 flex items-center justify-between gap-2" },
         h(
           "h2",
-          { class: "font-bold" },
+          { class: "font-bold text-lg truncate" },
           titleOf(d) + (ep ? ` — S${ep.season}E${ep.episode}: ${ep.name}` : ""),
         ),
-        closeBtn,
+        headerActions,
       ),
       body,
     ),

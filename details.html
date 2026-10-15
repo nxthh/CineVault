@@ -41,6 +41,18 @@
         <h2 id="h1" class="sr-only">Title Overview</h2>
         <div id="c1"></div>
       </section>
+
+      <!-- NEW: Season & Episode Section (Hidden for movies by default) -->
+      <section id="s-episodes" aria-labelledby="h-episodes" class="mx-auto max-w-7xl px-4 py-8 hidden">
+        <div class="mb-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <h2 id="h-episodes" class="text-2xl font-bold">Episodes</h2>
+          <select id="season-select" class="rounded bg-zinc-900 px-3 py-2 text-sm text-zinc-100 border border-zinc-800 focus:outline-none focus:border-accent">
+            <!-- Populated via JS -->
+          </select>
+        </div>
+        <div id="episodes-list" class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"></div>
+      </section>
+
       <section id="s2" aria-labelledby="h2" class="mx-auto max-w-7xl px-4 py-8">
         <h2 id="h2" class="mb-4 text-2xl font-bold">Cast & Crew</h2>
         <div id="c2"></div>
