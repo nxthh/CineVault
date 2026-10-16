@@ -1,6 +1,6 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@config "../tailwind.config.js";
+
 .skeleton {
   @apply animate-pulse bg-zinc-300 dark:bg-zinc-800 rounded-lg;
 }
