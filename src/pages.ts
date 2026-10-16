@@ -201,8 +201,7 @@ async function library(type: Media) {
       "select",
       {
         "aria-label": label,
-        class:
-          "rounded border border-zinc-500/40 bg-transparent px-2 py-1 dark:bg-zinc-900",
+        class: "cv-select",
       },
       ...opts.map(([v, t]) => h("option", { value: v }, t)),
     ) as HTMLSelectElement;
@@ -487,8 +486,7 @@ function details() {
       // TV Show Season & Episode Picker Section in Details
       const sn = h("select", {
         "aria-label": "Season",
-        class:
-          "rounded border border-zinc-500/40 bg-transparent px-2 py-1 dark:bg-zinc-900 mb-4",
+        class: "cv-select mb-4",
       }) as HTMLSelectElement;
 
       const epsList = h("div", { class: "space-y-3 mb-6" });
@@ -623,34 +621,34 @@ function mylist() {
     const counts = (t: string) => l.filter((x) => x.type === t).length;
     mount(
       "#c1",
-      h(
-        "div",
-        { class: "rounded-lg border border-zinc-500/30 p-6" },
-        h("p", { class: "text-3xl font-black" }, `${l.length} saved`),
-        h(
-          "p",
-          { class: "text-zinc-500" },
-          `${counts("movie")} movies · ${counts("tv")} TV shows. Your list is stored in this browser.`,
-        ),
-        (() => {
-          const b = h(
-            "button",
-            {
-              type: "button",
-              class: "mt-3 rounded border border-zinc-500/40 px-3 py-1 text-sm",
-            },
-            "Clear list",
-          );
-          b.onclick = () => {
-            if (l.length && confirm("Remove all saved titles?")) {
-              localStorage.setItem("cv-list", "[]");
-              document.dispatchEvent(new Event("cv-list"));
-              render();
-            }
-          };
-          return b;
-        })(),
-      ),
+      // h(
+      //   "div",
+      //   { class: "rounded-lg border border-zinc-500/30 p-6" },
+      //   h("p", { class: "text-3xl font-black" }, `${l.length} saved`),
+      //   h(
+      //     "p",
+      //     { class: "text-zinc-500" },
+      //     `${counts("movie")} movies · ${counts("tv")} TV shows. Your list is stored in this browser.`,
+      //   ),
+      //   (() => {
+      //     const b = h(
+      //       "button",
+      //       {
+      //         type: "button",
+      //         class: "mt-3 rounded border border-zinc-500/40 px-3 py-1 text-sm",
+      //       },
+      //       "Clear list",
+      //     );
+      //     b.onclick = () => {
+      //       if (l.length && confirm("Remove all saved titles?")) {
+      //         localStorage.setItem("cv-list", "[]");
+      //         document.dispatchEvent(new Event("cv-list"));
+      //         render();
+      //       }
+      //     };
+      //     return b;
+      //   })(),
+      // ),
     );
     const col = $("#c2");
     const body = h("div");
@@ -682,7 +680,12 @@ function mylist() {
               const t = sub[i].type;
               const rm = h(
                 "button",
-                { type: "button", class: "text-xs text-red-500" },
+                {
+                  type: "button",
+                  class:
+                    "rounded-lg border border-zinc-300 px-3 py-2 text-xs font-semibold text-zinc-600 hover:border-red-500/40 hover:bg-red-500/10 hover:text-red-500 dark:border-white/10 dark:text-zinc-300 dark:hover:text-red-400",
+                  "aria-label": `Remove ${titleOf(d)} from My Collection`,
+                },
                 "Remove",
               );
               rm.onclick = () => {
@@ -691,47 +694,86 @@ function mylist() {
               };
               const w = h(
                 "button",
-                { type: "button", class: "text-xs text-accent" },
+                {
+                  type: "button",
+                  class:
+                    "flex-1 rounded-lg bg-accent px-3 py-2 text-xs font-semibold text-white shadow-sm hover:bg-violet-500 focus-visible:outline-offset-2",
+                },
                 "Watch Now",
               );
               w.onclick = () => openPlayer(d, t);
               return h(
                 "article",
-                {},
+                {
+                  class:
+                    "movie-card group min-w-0 overflow-hidden rounded-2xl border border-zinc-200/80 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl dark:border-white/10 dark:bg-zinc-900/80",
+                },
                 h(
                   "a",
-                  { href: href(t, d.id) },
+                  {
+                    href: href(t, d.id),
+                    "aria-label": `View ${titleOf(d)} details`,
+                    class: "relative block overflow-hidden",
+                  },
                   d.poster_path
                     ? h("img", {
                         src: img(d.poster_path),
                         alt: `${titleOf(d)} poster`,
-                        class: "aspect-[2/3] rounded-lg object-cover",
+                        class:
+                          "aspect-[2/3] w-full object-cover transition-transform duration-500 group-hover:scale-105",
                         loading: "lazy",
                       })
                     : h(
                         "div",
                         {
                           class:
-                            "flex aspect-[2/3] items-center justify-center rounded-lg bg-zinc-300 dark:bg-zinc-800",
+                            "flex aspect-[2/3] items-center justify-center bg-zinc-200 p-3 text-center text-sm font-medium dark:bg-zinc-800",
                         },
                         titleOf(d),
                       ),
                   h(
-                    "h3",
-                    { class: "mt-1 truncate text-sm font-semibold" },
-                    titleOf(d),
+                    "span",
+                    {
+                      class:
+                        "absolute left-3 top-3 rounded-full border border-white/20 bg-black/65 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white shadow-sm backdrop-blur",
+                    },
+                    t === "tv" ? "TV Series" : "Movie",
+                  ),
+                  h(
+                    "span",
+                    {
+                      class:
+                        "absolute bottom-3 right-3 rounded-full border border-white/20 bg-black/65 px-2.5 py-1 text-xs font-semibold text-white shadow-sm backdrop-blur",
+                    },
+                    `★ ${d.vote_average ? d.vote_average.toFixed(1) : "N/A"}`,
                   ),
                 ),
                 h(
                   "div",
-                  { class: "flex gap-3" },
+                  { class: "p-3" },
                   h(
-                    "a",
-                    { href: href(t, d.id), class: "text-xs underline" },
-                    "View Details",
+                    "h3",
+                    {
+                      class:
+                        "truncate text-sm font-semibold sm:text-base",
+                      title: titleOf(d),
+                    },
+                    titleOf(d),
                   ),
-                  w,
-                  rm,
+                  h(
+                    "p",
+                    {
+                      class:
+                        "mt-1 text-xs text-zinc-500 dark:text-zinc-400",
+                    },
+                    `${yearOf(d)} · ${t === "tv" ? "TV" : "Movie"}`,
+                  ),
+                  h(
+                    "div",
+                    { class: "mt-3 flex items-center gap-2" },
+                    w,
+                    rm,
+                  ),
                 ),
               );
             }),

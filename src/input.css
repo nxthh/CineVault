@@ -9,6 +9,45 @@
   outline-offset: 2px;
 }
 
+.cv-select {
+  min-height: 2.5rem;
+  appearance: none;
+  border: 1px solid rgb(212 212 216 / 0.9);
+  border-radius: 0.75rem;
+  background-color: rgb(255 255 255 / 0.9);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none'%3E%3Cpath d='m5 7.5 5 5 5-5' stroke='%2371717a' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-position: right 0.75rem center;
+  background-repeat: no-repeat;
+  background-size: 1rem;
+  color: inherit;
+  color-scheme: light;
+  cursor: pointer;
+  padding: 0.625rem 2.5rem 0.625rem 0.875rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+.cv-select:hover {
+  border-color: #8b5cf6;
+}
+.cv-select:focus-visible {
+  border-color: #8b5cf6;
+  box-shadow: 0 0 0 3px rgb(139 92 246 / 0.2);
+}
+.cv-select option {
+  background-color: white;
+  color: #18181b;
+}
+.dark .cv-select {
+  border-color: rgb(255 255 255 / 0.15);
+  background-color: #18181b;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none'%3E%3Cpath d='m5 7.5 5 5 5-5' stroke='%23a1a1aa' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  color-scheme: dark;
+}
+.dark .cv-select option {
+  background-color: #18181b;
+  color: #f4f4f5;
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -69,9 +108,13 @@ button:active {
 }
 .movie-card {
   animation: card-in 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  transition-duration: 500ms;
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
 }
 .movie-card img {
   display: block;
+  transition-duration: 700ms;
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
 }
 .ranked-card .rank-badge {
   position: absolute;
