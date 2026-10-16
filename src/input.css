@@ -25,8 +25,22 @@ body * {
     border-color 0.3s ease;
 }
 body > header {
-  position: relative;
+  position: sticky;
+  top: 0;
   z-index: 50;
+}
+.nav-link-current {
+  position: relative;
+}
+.nav-link-current::after {
+  position: absolute;
+  right: 0.75rem;
+  bottom: 0.2rem;
+  left: 0.75rem;
+  height: 2px;
+  border-radius: 9999px;
+  background-color: #8b5cf6;
+  content: "";
 }
 body > header,
 body > main,

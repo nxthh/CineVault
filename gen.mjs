@@ -22,8 +22,8 @@ const P = {
   "tv-shows": [
     "TV Shows",
     "TV Shows — CineVault",
-    "Explore series, seasons and episodes.",
-    ["Series Spotlight", "Binge-Worthy Series", "Episode Explorer"],
+    "Browse, search and filter TV shows.",
+    ["Series Spotlight", "Binge-Worthy Series", "TV Library"],
     "tv",
   ],
   details: [

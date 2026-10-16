@@ -174,7 +174,19 @@ export function card(i: Item, fallback: Media, rank?: number) {
           String(rank),
         )
       : null,
-    h("div", { class: "relative overflow-hidden bg-zinc-200 dark:bg-zinc-800" }, poster),
+    h(
+      "a",
+      {
+        href: href(t, i.id),
+        "aria-label": `View ${titleOf(i)} details`,
+        class: "block rounded-t-2xl focus-visible:outline-offset-[-2px]",
+      },
+      h(
+        "div",
+        { class: "relative overflow-hidden bg-zinc-200 dark:bg-zinc-800" },
+        poster,
+      ),
+    ),
     btn,
     h(
       "div",
@@ -339,6 +351,7 @@ export function initChrome() {
     } catch {}
     sync();
   };
+  const currentPage = window.location.pathname.split("/").pop() || "index.html";
   const links = [
     ["index.html", "Home"],
     ["movies.html", "Movies"],
@@ -349,7 +362,9 @@ export function initChrome() {
       {
         href: u,
         class:
-          "rounded-full px-3 py-2 font-semibold text-zinc-600 transition-colors hover:bg-accent/10 hover:text-accent dark:text-zinc-300",
+          "rounded-full px-3 py-2 font-semibold text-zinc-600 transition-colors hover:bg-accent/10 hover:text-accent dark:text-zinc-300" +
+          (currentPage === u ? " nav-link-current" : ""),
+        ...(currentPage === u ? { "aria-current": "page" } : {}),
       },
       l,
     ),
@@ -499,7 +514,7 @@ export function initChrome() {
     "nav",
     {
       class:
-        "fixed inset-x-0 top-0 z-40 border-b border-zinc-200/70 bg-zinc-50/85 shadow-sm backdrop-blur-xl dark:border-white/10 dark:bg-zinc-950/80",
+        "relative z-50 w-full border-b border-zinc-200/70 bg-zinc-50/85 shadow-sm backdrop-blur-xl dark:border-white/10 dark:bg-zinc-950/80",
       "aria-label": "Main",
     },
     h(
@@ -524,7 +539,9 @@ export function initChrome() {
         {
           href: "my-list.html",
           class:
-            "rounded-full px-3 py-2 font-semibold text-zinc-600 transition-colors hover:bg-accent/10 hover:text-accent dark:text-zinc-300",
+            "rounded-full px-3 py-2 font-semibold text-zinc-600 transition-colors hover:bg-accent/10 hover:text-accent dark:text-zinc-300" +
+            (currentPage === "my-list.html" ? " nav-link-current" : ""),
+          ...(currentPage === "my-list.html" ? { "aria-current": "page" } : {}),
         },
         icon(Bookmark, "mr-1 inline size-4 align-[-3px]"),
         "My List",
@@ -543,12 +560,6 @@ export function initChrome() {
     ),
   );
   mount("#nav", nav);
-  const navHost = $("#nav");
-  const syncNavHeight = () => {
-    navHost.style.height = `${nav.offsetHeight}px`;
-  };
-  syncNavHeight();
-  new ResizeObserver(syncNavHeight).observe(nav);
   mount(
     "#footer",
     h(

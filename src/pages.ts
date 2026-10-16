@@ -76,6 +76,12 @@ function hero(d: Detail, t: Media, watchLabel: string, withList = false) {
         "relative flex min-h-[26rem] items-end bg-zinc-900 bg-cover bg-center",
       style: bg ? `background-image:url(${bg})` : "",
     },
+    h("a", {
+      href: href(t, d.id),
+      "aria-label": `View ${titleOf(d)} details`,
+      class:
+        "absolute inset-0 z-10 rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent",
+    }),
     h("div", {
       class:
         "absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent",
@@ -84,7 +90,7 @@ function hero(d: Detail, t: Media, watchLabel: string, withList = false) {
       "div",
       {
         class:
-          "relative mx-auto flex w-full max-w-7xl gap-6 px-4 py-8 text-white",
+          "pointer-events-none relative z-20 mx-auto flex w-full max-w-7xl gap-6 px-4 py-8 text-white",
       },
       d.poster_path
         ? h("img", {
@@ -105,7 +111,7 @@ function hero(d: Detail, t: Media, watchLabel: string, withList = false) {
         ),
         h(
           "div",
-          { class: "mt-4 flex flex-wrap gap-2" },
+          { class: "pointer-events-auto mt-4 flex flex-wrap gap-2" },
           btn(watchLabel, () => openPlayer(d, t), true),
           withList ? btn("", () => {}) : link("More Info", href(t, d.id)),
           (() => {
@@ -176,9 +182,9 @@ function movies() {
       true,
     ),
   );
-  library();
+  library("movie");
 }
-async function library() {
+async function library(type: Media) {
   const root = $("#c3");
   const state = {
     q: "",
@@ -205,7 +211,7 @@ async function library() {
   const q = h("input", {
     type: "search",
     "aria-label": "Search library",
-    placeholder: "Search movies…",
+    placeholder: `Search ${type === "movie" ? "movies" : "TV shows"}…`,
     class: "rounded border border-zinc-500/40 bg-transparent px-2 py-1",
   }) as HTMLInputElement;
   const g = sel("Genre", [["", "All genres"]]),
@@ -254,30 +260,34 @@ async function library() {
   );
   try {
     (
-      await api<{ genres: { id: number; name: string }[] }>("/genre/movie/list")
+      await api<{ genres: { id: number; name: string }[] }>(
+        `/genre/${type}/list`,
+      )
     ).genres.forEach((x) =>
       g.append(h("option", { value: String(x.id) }, x.name)),
     );
-  } catch {}
+  } catch (e) {
+    root.prepend(errorBox(e));
+  }
   const view = () => {
     let l = [...items];
-    if (state.q) {
-      l = l.filter(
-        (i) =>
-          (!state.year || yearOf(i) === state.year) &&
-          (!state.genre || i.genre_ids?.includes(+state.genre)) &&
-          i.vote_average >= +state.rating,
-      );
-    }
+    l = l.filter(
+      (i) =>
+        (!state.year || yearOf(i) === state.year) &&
+        (!state.genre || i.genre_ids?.includes(+state.genre)) &&
+        i.vote_average >= +state.rating,
+    );
     if (state.sort === "title")
       l.sort((a, b) => titleOf(a).localeCompare(titleOf(b)));
     if (state.sort === "date")
       l.sort((a, b) =>
-        (b.release_date || "").localeCompare(a.release_date || ""),
+        (b.release_date || b.first_air_date || "").localeCompare(
+          a.release_date || a.first_air_date || "",
+        ),
       );
     if (state.sort === "rating")
       l.sort((a, b) => b.vote_average - a.vote_average);
-    out.replaceChildren(grid(l, "movie"));
+    out.replaceChildren(grid(l, type));
   };
   const fetchPage = async (reset: boolean) => {
     if (reset) {
@@ -289,14 +299,17 @@ async function library() {
     try {
       let p: Page<Item>;
       if (state.q)
-        p = await api<Page<Item>>("/search/movie", {
+        p = await api<Page<Item>>(`/search/${type}`, {
           query: state.q,
           page: state.page,
         });
       else {
         const sm: Record<string, string> = {
-          title: "original_title.asc",
-          date: "primary_release_date.desc",
+          title: type === "movie" ? "original_title.asc" : "original_name.asc",
+          date:
+            type === "movie"
+              ? "primary_release_date.desc"
+              : "first_air_date.desc",
           rating: "vote_average.desc",
           "popularity.desc": "popularity.desc",
         };
@@ -307,8 +320,10 @@ async function library() {
           "vote_count.gte": state.sort === "rating" ? 200 : 0,
         };
         if (state.genre) o.with_genres = state.genre;
-        if (state.year) o.primary_release_year = state.year;
-        p = await api<Page<Item>>("/discover/movie", o);
+        if (state.year)
+          o[type === "movie" ? "primary_release_year" : "first_air_date_year"] =
+            state.year;
+        p = await api<Page<Item>>(`/discover/${type}`, o);
       }
       if (request !== requestId) return;
       items = p.results;
@@ -403,134 +418,7 @@ function tv() {
       ),
     );
   });
-  load("#c3", async () => {
-    const shows = (await api<Page<Item>>("/tv/popular")).results.slice(0, 15);
-    const ss = h(
-      "select",
-      {
-        "aria-label": "Series",
-        class:
-          "rounded border border-zinc-500/40 bg-transparent px-2 py-1 dark:bg-zinc-900",
-      },
-      ...shows.map((s) => h("option", { value: String(s.id) }, titleOf(s))),
-    ) as HTMLSelectElement;
-    const sn = h("select", {
-      "aria-label": "Season",
-      class:
-        "rounded border border-zinc-500/40 bg-transparent px-2 py-1 dark:bg-zinc-900",
-    }) as HTMLSelectElement;
-    const list = h("div", { class: "mt-4 space-y-3" });
-    let d: Detail;
-    const eps = async () => {
-      list.replaceChildren(skeletons(2));
-      try {
-        const r = await api<{ episodes: Episode[] }>(
-          `/tv/${d.id}/season/${sn.value}`,
-        );
-        list.replaceChildren(
-          ...(r.episodes.length
-            ? r.episodes.map((e, index, allEpisodes) => {
-                const b = h(
-                  "button",
-                  {
-                    type: "button",
-                    class: "rounded bg-accent px-3 py-1 text-sm text-white",
-                  },
-                  "Play",
-                );
-                b.onclick = () => {
-                  const playEp = (currIndex: number) => {
-                    const curr = allEpisodes[currIndex];
-                    const next = allEpisodes[currIndex + 1];
-                    openPlayer(
-                      d,
-                      "tv",
-                      {
-                        season: +sn.value,
-                        episode: curr.episode_number,
-                        name: curr.name,
-                      },
-                      next ? () => playEp(currIndex + 1) : undefined,
-                    );
-                  };
-                  playEp(index);
-                };
-                return h(
-                  "article",
-                  {
-                    class:
-                      "flex gap-3 rounded-lg border border-zinc-500/30 p-3",
-                  },
-                  e.still_path
-                    ? h("img", {
-                        src: img(e.still_path, "w300"),
-                        alt: `Still from ${e.name}`,
-                        loading: "lazy",
-                        class: "hidden w-40 rounded sm:block",
-                      })
-                    : h(
-                        "div",
-                        {
-                          class:
-                            "hidden w-40 items-center justify-center rounded bg-zinc-300 text-xs dark:bg-zinc-800 sm:flex",
-                        },
-                        "No image",
-                      ),
-                  h(
-                    "div",
-                    { class: "flex-1" },
-                    h(
-                      "h4",
-                      { class: "font-semibold" },
-                      `${sn.value === "0" ? "Special" : "E" + e.episode_number}: ${e.name || "Untitled"}`,
-                    ),
-                    h(
-                      "p",
-                      { class: "text-xs text-zinc-500" },
-                      e.air_date || "Air date unknown",
-                    ),
-                    h(
-                      "p",
-                      { class: "mt-1 text-sm" },
-                      e.overview || "No overview available.",
-                    ),
-                  ),
-                  b,
-                );
-              })
-            : [h("p", {}, "No episodes listed.")]),
-        );
-      } catch (e) {
-        list.replaceChildren(errorBox(e));
-      }
-    };
-    const seasons = async () => {
-      d = await detail("tv", +ss.value);
-      sn.replaceChildren(
-        ...(d.seasons || []).map((s) =>
-          h(
-            "option",
-            { value: String(s.season_number) },
-            s.season_number === 0 ? "Specials" : s.name,
-          ),
-        ),
-      );
-      if (sn.options.length)
-        sn.value = d.seasons!.find((s) => s.season_number === 1)
-          ? "1"
-          : sn.options[0].value;
-      eps();
-    };
-    ss.onchange = seasons;
-    sn.onchange = eps;
-    seasons();
-    return h(
-      "div",
-      {},
-      h("div", { class: "flex flex-wrap gap-2" }, ss, sn),
-      list,
-    );
-  });
+  library("tv");
 }
 function details() {
   const p = new URLSearchParams(location.search);
