@@ -56,12 +56,14 @@ body {
     background-color 0.35s ease,
     color 0.35s ease;
 }
-body,
-body * {
-  transition:
-    background-color 0.3s ease,
-    color 0.3s ease,
-    border-color 0.3s ease;
+@layer base {
+  body,
+  body * {
+    transition:
+      background-color 0.3s ease,
+      color 0.3s ease,
+      border-color 0.3s ease;
+  }
 }
 body > header {
   position: sticky;
@@ -108,13 +110,9 @@ button:active {
 }
 .movie-card {
   animation: card-in 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) both;
-  transition-duration: 500ms;
-  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
 }
 .movie-card img {
   display: block;
-  transition-duration: 800ms;
-  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
 }
 .ranked-card .rank-badge {
   position: absolute;

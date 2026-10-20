@@ -17,7 +17,7 @@ export function card(item: Item, fallback: Media, rank?: number) {
         alt: `${titleOf(item)} poster`,
         loading: "lazy",
         class:
-          "aspect-[2/3] w-full object-cover transition-transform duration-700 group-hover:scale-[1.06]",
+          "aspect-[2/3] w-full object-cover transition-transform duration-1000 ease-out group-hover:scale-[1.06]",
       })
     : h(
         "div",
@@ -42,7 +42,7 @@ export function card(item: Item, fallback: Media, rank?: number) {
     "article",
     {
       class:
-        "movie-card group relative min-w-0 overflow-hidden rounded-2xl border border-zinc-200/80 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl dark:border-white/10 dark:bg-zinc-900/80 " +
+        "movie-card group relative min-w-0 overflow-hidden rounded-2xl border border-zinc-200/80 bg-white shadow-sm transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-xl dark:border-white/10 dark:bg-zinc-900/80 " +
         (rank ? "ranked-card" : ""),
     },
     rank
