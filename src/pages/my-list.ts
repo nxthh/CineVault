@@ -40,7 +40,11 @@ export function mylist() {
             h("p", {}, "Nothing here yet."),
             h(
               "a",
-              { href: "index.html", class: "text-accent underline" },
+              {
+                href: "index.html",
+                class:
+                  "mt-4 inline-flex rounded-xl bg-accent px-4 py-2 font-semibold text-white transition-colors hover:bg-violet-500 focus-visible:outline-offset-2",
+              },
               "Discover something to watch",
             ),
           ),

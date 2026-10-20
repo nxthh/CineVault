@@ -17,7 +17,7 @@ export function card(item: Item, fallback: Media, rank?: number) {
         alt: `${titleOf(item)} poster`,
         loading: "lazy",
         class:
-          "aspect-[2/3] w-full object-cover transition-transform duration-1000 ease-out group-hover:scale-[1.06]",
+          "aspect-[2/3] w-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.04]",
       })
     : h(
         "div",

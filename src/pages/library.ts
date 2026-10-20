@@ -28,7 +28,7 @@ export async function library(type: Media) {
     type: "search",
     "aria-label": "Search library",
     placeholder: `Search ${type === "movie" ? "movies" : "TV shows"}…`,
-    class: "rounded border border-zinc-500/40 bg-transparent px-2 py-1",
+    class: "rounded-xl border border-zinc-500/40 bg-transparent px-2 py-1",
   }) as HTMLInputElement;
   const g = sel("Genre", [["", "All genres"]]),
     y = sel("Year", [
@@ -52,7 +52,7 @@ export async function library(type: Media) {
   ]);
   const clear = h(
     "button",
-    { type: "button", class: "rounded border border-zinc-500/40 px-2 py-1" },
+    { type: "button", class: "rounded-xl border border-zinc-500/40 px-2 py-1" },
     "Clear filters",
   );
   const out = h("div"),
