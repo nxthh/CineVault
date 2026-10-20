@@ -1,5 +1,13 @@
 # CineVault
 Static frontend (HTML + Tailwind CSS + TypeScript, bundled with esbuild) using the TMDB API.
+
+## Source layout
+
+- `src/main.ts` starts the shared navigation and page-specific entry points.
+- `src/pages.ts` maps page names to their renderers in `src/pages/`; each page and the shared library/hero helpers have their own module. `src/tmdb.ts` handles TMDB data.
+- `src/ui/` contains focused UI modules for DOM helpers, cards, pagination, list storage, feedback, and site chrome. `src/ui.ts` re-exports these modules to keep existing imports concise.
+- `src/player.ts` contains the trailer and watch-provider player.
+
 ## Setup
 1. `npm install`
 2. `cp .env.example .env` and set `TMDB_READ_TOKEN` (TMDB API Read Access Token).

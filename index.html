@@ -1,58 +1,11 @@
-<!doctype html>
-<html lang="en" class="dark">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>CineVault — Discover Movies & TV Shows</title>
-    <meta
-      name="description"
-      content="Discover trending movies and series with CineVault."
-    />
-    <link rel="canonical" href="https://example.com/index.html" />
-    <meta
-      property="og:title"
-      content="CineVault — Discover Movies & TV Shows"
-    />
-    <meta
-      property="og:description"
-      content="Discover trending movies and series with CineVault."
-    />
-    <meta property="og:type" content="website" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <script>
-      try {
-        var t = localStorage.getItem("cv-theme");
-        if (
-          t
-            ? t === "light"
-            : matchMedia("(prefers-color-scheme: light)").matches
-        )
-          document.documentElement.classList.remove("dark");
-      } catch (e) {}
-    </script>
-    <link rel="stylesheet" href="dist/styles.css" />
-    <script type="module" src="dist/main.js" defer></script>
-  </head>
-  <body
-    data-page="home"
-    class="bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100 min-h-screen"
-  >
-    <header id="nav"></header>
-    <h1 class="sr-only">Home — CineVault</h1>
-    <main>
-      <section id="s1" aria-labelledby="h1" class="">
-        <h2 id="h1" class="sr-only">Featured Premiere</h2>
-        <div id="c1"></div>
-      </section>
-      <section id="s2" aria-labelledby="h2" class="mx-auto max-w-7xl px-4 py-8">
-        <h2 id="h2" class="mb-4 text-2xl font-bold">Trending This Week</h2>
-        <div id="c2"></div>
-      </section>
-      <section id="s3" aria-labelledby="h3" class="mx-auto max-w-7xl px-4 py-8">
-        <h2 id="h3" class="mb-4 text-2xl font-bold">Recommended for You</h2>
-        <div id="c3"></div>
-      </section>
-    </main>
-    <footer id="footer"></footer>
-  </body>
-</html>
+<!doctype html><html lang="en" class="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CineVault — Discover Movies & TV Shows</title><meta name="description" content="Discover trending movies and series with CineVault."><link rel="canonical" href="https://example.com/index.html">
+<meta property="og:title" content="CineVault — Discover Movies & TV Shows"><meta property="og:description" content="Discover trending movies and series with CineVault."><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image">
+<script>try{var t=localStorage.getItem('cv-theme');if(t?t==='light':matchMedia('(prefers-color-scheme: light)').matches)document.documentElement.classList.remove('dark')}catch(e){}</script>
+<link rel="stylesheet" href="dist/styles.css"><script type="module" src="dist/main.js" defer></script></head>
+<body data-page="home" class="bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100 min-h-screen"><header id="nav"></header><h1 class="sr-only">Home — CineVault</h1>
+<main>
+<section id="s1" aria-labelledby="h1" class=""><h2 id="h1" class="sr-only">Featured Premiere</h2><div id="c1"></div></section>
+<section id="s2" aria-labelledby="h2" class="mx-auto max-w-7xl px-4 py-8"><h2 id="h2" class="mb-4 text-2xl font-bold">Trending This Week</h2><div id="c2"></div></section>
+<section id="s3" aria-labelledby="h3" class="mx-auto max-w-7xl px-4 py-8"><h2 id="h3" class="mb-4 text-2xl font-bold">Recommended for You</h2><div id="c3"></div></section>
+</main><footer id="footer"></footer></body></html>
