@@ -54,11 +54,11 @@ export function initChrome() {
     placeholder: "Search…",
     "aria-label": "Search movies and TV shows",
     class:
-      "min-w-0 flex-1 rounded-full border border-zinc-300 bg-white py-2 pl-10 pr-4 text-sm shadow-sm outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20 dark:border-white/15 dark:bg-zinc-900 sm:w-56",
+      "min-w-0 flex-1 rounded-full border border-zinc-300 bg-white py-2 pl-10 pr-4 text-sm outline-none transition focus:border-accent dark:border-white/15 dark:bg-zinc-900 sm:w-56",
   }) as HTMLInputElement;
   const dropdown = h("ul", {
     class:
-      "absolute right-0 top-full z-50 mt-2 hidden max-h-80 w-full overflow-auto rounded-2xl border border-zinc-200 bg-white text-sm shadow-xl dark:border-white/10 dark:bg-zinc-900 sm:w-72",
+      "absolute right-0 top-full z-50 mt-2 hidden max-h-80 w-full overflow-auto rounded-2xl border border-zinc-200 bg-white text-sm dark:border-white/10 dark:bg-zinc-900 sm:w-72",
     role: "listbox",
     id: "nav-search-results",
   });
@@ -195,7 +195,7 @@ export function initChrome() {
     "nav",
     {
       class:
-        "relative z-50 w-full border-b border-zinc-200/70 bg-zinc-50/85 shadow-sm backdrop-blur-xl dark:border-white/10 dark:bg-zinc-950/80",
+        "relative z-50 w-full border-b border-zinc-200/70 bg-zinc-50/85 backdrop-blur-xl dark:border-white/10 dark:bg-zinc-950/80",
       "aria-label": "Main",
     },
     h(

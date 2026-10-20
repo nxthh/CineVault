@@ -7,7 +7,7 @@ export function toast(message: string) {
     {
       role: "status",
       class:
-        "fixed bottom-4 left-1/2 -translate-x-1/2 z-50 rounded-lg bg-accent px-4 py-2 text-white shadow",
+        "fixed bottom-4 left-1/2 -translate-x-1/2 z-50 rounded-lg bg-accent px-4 py-2 text-white",
     },
     message,
   );

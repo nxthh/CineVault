@@ -62,7 +62,7 @@ export async function library(type: Media) {
       "div",
       {
         class:
-          "mb-5 flex flex-wrap gap-2 rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-zinc-900/60",
+          "mb-5 flex flex-wrap gap-2 rounded-2xl border border-zinc-200 bg-white p-4 dark:border-white/10 dark:bg-zinc-900/60",
       },
       q,
       g,

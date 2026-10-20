@@ -75,7 +75,7 @@ export function mylist() {
                 {
                   type: "button",
                   class:
-                    "flex-1 rounded-lg bg-accent px-3 py-2 text-xs font-semibold text-white shadow-sm hover:bg-violet-500 focus-visible:outline-offset-2",
+                    "flex-1 rounded-lg bg-accent px-3 py-2 text-xs font-semibold text-white hover:bg-violet-500 focus-visible:outline-offset-2",
                 },
                 "Watch Now",
               );
@@ -84,7 +84,7 @@ export function mylist() {
                 "article",
                 {
                   class:
-                    "movie-card group min-w-0 overflow-hidden rounded-2xl border border-zinc-200/80 bg-white shadow-sm transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-xl dark:border-white/10 dark:bg-zinc-900/80",
+                    "movie-card group min-w-0 overflow-hidden rounded-2xl border border-zinc-200/80 bg-white transition-all duration-300 ease-out hover:-translate-y-1 dark:border-white/10 dark:bg-zinc-900/80",
                 },
                 h(
                   "a",
@@ -113,7 +113,7 @@ export function mylist() {
                     "span",
                     {
                       class:
-                        "absolute left-3 top-3 rounded-full border border-white/20 bg-black/65 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white shadow-sm backdrop-blur",
+                        "absolute left-3 top-3 rounded-full border border-white/20 bg-black/65 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white backdrop-blur",
                     },
                     t === "tv" ? "TV Series" : "Movie",
                   ),
@@ -121,7 +121,7 @@ export function mylist() {
                     "span",
                     {
                       class:
-                        "absolute bottom-3 right-3 rounded-full border border-white/20 bg-black/65 px-2.5 py-1 text-xs font-semibold text-white shadow-sm backdrop-blur",
+                        "absolute bottom-3 right-3 rounded-full border border-white/20 bg-black/65 px-2.5 py-1 text-xs font-semibold text-white backdrop-blur",
                     },
                     `★ ${d.vote_average ? d.vote_average.toFixed(1) : "N/A"}`,
                   ),

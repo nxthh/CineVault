@@ -33,7 +33,7 @@ export function card(item: Item, fallback: Media, rank?: number) {
     "data-media-id": String(item.id),
     "data-title": titleOf(item),
     class:
-      "absolute right-2 top-2 inline-flex size-9 items-center justify-center rounded-full border border-white/20 bg-black/60 text-white shadow-lg backdrop-blur transition hover:scale-110 hover:bg-accent focus-visible:outline-white",
+      "absolute right-2 top-2 inline-flex size-9 items-center justify-center rounded-full border border-white/20 bg-black/60 text-white backdrop-blur transition hover:scale-110 hover:bg-accent focus-visible:outline-white",
   }) as HTMLButtonElement;
   syncListButton(button, type, item.id, titleOf(item));
   button.onclick = () => toggleList(type, item.id);
@@ -42,7 +42,7 @@ export function card(item: Item, fallback: Media, rank?: number) {
     "article",
     {
       class:
-        "movie-card group relative min-w-0 overflow-hidden rounded-2xl border border-zinc-200/80 bg-white shadow-sm transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-xl dark:border-white/10 dark:bg-zinc-900/80 " +
+        "movie-card group relative min-w-0 overflow-hidden rounded-2xl border border-zinc-200/80 bg-white  transition-all duration-300 ease-out hover:-translate-y-1  dark:border-white/10 dark:bg-zinc-900/80 " +
         (rank ? "ranked-card" : ""),
     },
     rank

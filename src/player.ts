@@ -105,7 +105,7 @@ export function openPlayer(
     },
     h(
       "div",
-      { class: "w-full max-w-4xl rounded-lg bg-white p-4 dark:bg-zinc-900 shadow-2xl" },
+      { class: "w-full max-w-4xl rounded-lg bg-white p-4 dark:bg-zinc-900" },
       h(
         "div",
         { class: "mb-3 flex items-center justify-between gap-2" },
