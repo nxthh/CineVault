@@ -102,7 +102,7 @@ export function mylist() {
                         src: img(d.poster_path),
                         alt: `${titleOf(d)} poster`,
                         class:
-                          "aspect-[2/3] w-full object-cover transition-transform duration-1000 ease-out group-hover:scale-[1.06]",
+                          "aspect-[2/3] w-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.06]",
                         loading: "lazy",
                       })
                     : h(
