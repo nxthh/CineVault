@@ -18,3 +18,4 @@ for (const page of pages) {
 }
 for (const file of ["robots.txt", "sitemap.xml"])
   fs.copyFileSync(file, `dist/${file}`);
+fs.copyFileSync("public/CineVault.ico", "dist/CineVault.ico");

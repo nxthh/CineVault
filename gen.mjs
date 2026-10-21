@@ -51,7 +51,7 @@ for (const [f, [h1, t, d, s, pg]] of Object.entries(P)) {
   fs.writeFileSync(
     f + ".html",
     `<!doctype html><html lang="en" class="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>${t}</title><meta name="description" content="${d}"><link rel="canonical" href="${SITE}/${f}.html">
+<title>${t}</title><meta name="description" content="${d}"><link rel="icon" href="/CineVault.ico" type="image/x-icon"><link rel="canonical" href="${SITE}/${f}.html">
 <meta property="og:title" content="${t}"><meta property="og:description" content="${d}"><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image">
 <script>try{var t=localStorage.getItem('cv-theme');if(t?t==='light':matchMedia('(prefers-color-scheme: light)').matches)document.documentElement.classList.remove('dark')}catch(e){}</script>
 <link rel="stylesheet" href="dist/styles.css"><script type="module" src="dist/main.js" defer></script></head>
