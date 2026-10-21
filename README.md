@@ -88,7 +88,7 @@ CineVault is not endorsed or certified by TMDB.
 
 ### VidSrc
 
-Streaming functionality is integrated through [VidSrc](https://vidsrc.to/), a third-party service.
+Streaming functionality is integrated through [VidSrc](https://vidsrc.sh/), a third-party service.
 
 CineVault does not claim ownership of third-party streaming content. The availability, legality, and terms of access for content provided by external services are subject to those services and applicable laws.
 
