@@ -1,16 +1,15 @@
-import { Item, Page, api } from "../tmdb";
-import { h, load, row } from "../ui";
-import { heroFor } from "./shared";
-import { library } from "./library";
+import type { Item, Page } from "../tmdb.js";
+import { api } from "../tmdb.js";
+import { h, load, row } from "../ui.js";
+import { heroFor } from "./shared.js";
+import { library } from "./library.js";
 
 export function tv() {
-  load("#c1", async () =>
-    heroFor(
-      "tv",
-      (await api<Page<Item>>("/tv/popular")).results[0].id,
-      "Watch Series",
-    ),
-  );
+  load("#c1", async () => {
+    const item = (await api<Page<Item>>("/tv/popular")).results[0];
+    if (!item) throw new Error("TMDB returned no popular TV shows.");
+    return heroFor("tv", item.id, "Watch Series");
+  });
   const cols: [string, Record<string, string | number>][] = [
     ["Crime Dramas", { with_genres: 80 }],
     ["Sitcoms", { with_genres: 35, with_origin_country: "US" }],
@@ -30,14 +29,18 @@ export function tv() {
     return h(
       "div",
       { class: "space-y-6" },
-      ...cols.map(([n], i) =>
-        h(
-          "div",
-          {},
-          h("h3", { class: "mb-2 font-semibold" }, n),
-          row(rs[i].results, "tv"),
-        ),
-      ),
+      ...cols.map(([n], i) => {
+        const result = rs[i];
+        if (!result) throw new Error("TV category results are missing.");
+        return (
+          h(
+            "div",
+            {},
+            h("h3", { class: "mb-2 font-semibold" }, n),
+            row(result.results, "tv"),
+          )
+        );
+      }),
     );
   });
   library("tv");

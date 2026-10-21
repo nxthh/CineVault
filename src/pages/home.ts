@@ -1,6 +1,7 @@
-import { Item, Page, api } from "../tmdb";
-import { h, load, row, getList } from "../ui";
-import { heroFor } from "./shared";
+import type { Item, Page } from "../tmdb.js";
+import { api } from "../tmdb.js";
+import { h, load, row, getList } from "../ui.js";
+import { heroFor } from "./shared.js";
 
 const rec = async () => {
   const l = getList().slice(-1)[0];
@@ -15,6 +16,7 @@ export function home() {
   load("#c1", async () => {
     const r = await api<Page<Item>>("/trending/all/week");
     const f = r.results.find((i) => i.backdrop_path) || r.results[0];
+    if (!f) throw new Error("TMDB returned no trending titles.");
     return heroFor(f.media_type === "tv" ? "tv" : "movie", f.id, "Watch Now");
   });
   load("#c2", async () =>

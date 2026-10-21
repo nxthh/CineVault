@@ -1,5 +1,5 @@
-import { hasToken } from "../tmdb";
-import { h, mount } from "./dom";
+import { hasToken } from "../tmdb.js";
+import { h, mount } from "./dom.js";
 
 export function toast(message: string) {
   const element = h(

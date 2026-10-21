@@ -1,7 +1,6 @@
-import { Bookmark, BookmarkCheck } from "lucide";
-import { Media } from "../tmdb";
-import { h, icon } from "./dom";
-import { toast } from "./feedback";
+import type { Media } from "../tmdb.js";
+import { h, icon } from "./dom.js";
+import { toast } from "./feedback.js";
 
 interface Saved {
   type: Media;
@@ -28,7 +27,7 @@ export const syncListButton = (
   title: string,
 ) => {
   const saved = inList(type, id);
-  button.replaceChildren(icon(saved ? BookmarkCheck : Bookmark));
+  button.replaceChildren(icon(saved ? "bookmark-check" : "bookmark"));
   button.setAttribute(
     "aria-label",
     `${saved ? "Remove from" : "Add to"} My List: ${title}`,

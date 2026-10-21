@@ -1,4 +1,4 @@
-import {initChrome} from './ui';
-import {pages} from './pages';
+import { initChrome } from "./ui.js";
+import { pages } from "./pages.js";
 initChrome();
 pages[document.body.dataset.page||'']?.();

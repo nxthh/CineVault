@@ -1,5 +1,6 @@
-import { Item, Page, Media, api, titleOf, yearOf } from "../tmdb";
-import { $, h, errorBox, grid, pagination, skeletons } from "../ui";
+import type { Item, Page, Media } from "../tmdb.js";
+import { api, titleOf, yearOf } from "../tmdb.js";
+import { $, h, errorBox, grid, pagination, skeletons } from "../ui.js";
 
 export async function library(type: Media) {
   const root = $("#c3");
@@ -129,9 +130,11 @@ export async function library(type: Media) {
           rating: "vote_average.desc",
           "popularity.desc": "popularity.desc",
         };
+        const sortBy = sm[state.sort];
+        if (!sortBy) throw new Error("Invalid sort selection.");
         const o: Record<string, string | number> = {
           page: state.page,
-          sort_by: sm[state.sort],
+          sort_by: sortBy,
           "vote_average.gte": state.rating,
           "vote_count.gte": state.sort === "rating" ? 200 : 0,
         };

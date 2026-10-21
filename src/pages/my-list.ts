@@ -1,13 +1,12 @@
+import type { Item, Page } from "../tmdb.js";
 import {
-  Item,
-  Page,
   api,
   detail,
   img,
   titleOf,
   yearOf,
   hasToken,
-} from "../tmdb";
+} from "../tmdb.js";
 import {
   $,
   h,
@@ -19,8 +18,8 @@ import {
   toggleList,
   errorBox,
   skeletons,
-} from "../ui";
-import { openPlayer } from "../player";
+} from "../ui.js";
+import { openPlayer } from "../player.js";
 
 export function mylist() {
   const render = async () => {
@@ -59,7 +58,9 @@ export function mylist() {
             "div",
             { class: "grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-5" },
             ...ds.map((d, i) => {
-              const t = sub[i].type;
+              const item = sub[i];
+              if (!item) throw new Error("Saved item details are missing.");
+              const t = item.type;
               const rm = h(
                 "button",
                 {

@@ -64,17 +64,25 @@ Make sure you have the following installed:
    npm install
    ```
 
-4. Start the development server using the script defined in `package.json`:
+4. In three separate terminals, start the TypeScript watcher, the Tailwind watcher, and the local static server:
 
    ```bash
    npm run dev
    ```
 
-   If your project does not define a `dev` script, check `package.json` for the available commands.
+   ```bash
+   npm run css:watch
+   ```
 
-5. Open the local URL shown in your terminal.
+   ```bash
+   npm run serve
+   ```
 
-> **Note:** The exact setup commands may vary depending on the project's current build configuration.
+5. Open the local URL shown by `npm run serve`.
+
+Edit the HTML pages in the project root directly. TypeScript files in `src/` compile to native JavaScript modules in `dist/`; Tailwind writes the stylesheet to `dist/styles.css`. Run `npm run build` to create production JavaScript and CSS, and `npm run typecheck` to check types without emitting files.
+
+Add your TMDB read access token to the `tmdb-read-token` meta tag in each HTML page. The token is visible to visitors because this is a browser-only app, just as it was in the previous client-side build.
 
 ## APIs and Resources
 

@@ -1,4 +1,6 @@
-declare const __TMDB_TOKEN__: string;
+const token =
+  document.querySelector<HTMLMetaElement>('meta[name="tmdb-read-token"]')
+    ?.content.trim() ?? "";
 export interface Item {
   id: number;
   media_type?: string;
@@ -47,7 +49,7 @@ export interface Page<T> {
 }
 export type Media = "movie" | "tv";
 const cache = new Map<string, Promise<unknown>>();
-export const hasToken = () => !!__TMDB_TOKEN__;
+export const hasToken = () => !!token;
 export function api<T>(
   path: string,
   params: Record<string, string | number> = {},
@@ -59,7 +61,7 @@ export function api<T>(
   if (!cache.has(url))
     cache.set(
       url,
-      fetch(url, { headers: { Authorization: `Bearer ${__TMDB_TOKEN__}` } })
+      fetch(url, { headers: { Authorization: `Bearer ${token}` } })
         .then((r) => {
           if (r.status === 429)
             throw new Error("Rate limited, try again shortly.");

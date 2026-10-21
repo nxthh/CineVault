@@ -1,8 +1,8 @@
-import { details } from "./pages/details";
-import { home } from "./pages/home";
-import { movies } from "./pages/movies";
-import { mylist } from "./pages/my-list";
-import { tv } from "./pages/tv";
+import { details } from "./pages/details.js";
+import { home } from "./pages/home.js";
+import { movies } from "./pages/movies.js";
+import { mylist } from "./pages/my-list.js";
+import { tv } from "./pages/tv.js";
 
 export const pages: Record<string, () => void> = {
   home,

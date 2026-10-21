@@ -1,7 +1,8 @@
-import { Episode, Media, api, detail, img, titleOf, yearOf } from "../tmdb";
-import { h, mount, load, errorBox, row, skeletons } from "../ui";
-import { openPlayer } from "../player";
-import { hero } from "./shared";
+import type { Episode, Media } from "../tmdb.js";
+import { api, detail, img, titleOf, yearOf } from "../tmdb.js";
+import { h, mount, load, errorBox, row, skeletons } from "../ui.js";
+import { openPlayer } from "../player.js";
+import { hero } from "./shared.js";
 
 export function details() {
   const p = new URLSearchParams(location.search);
@@ -96,6 +97,7 @@ export function details() {
                     const playEp = (currIndex: number) => {
                       const curr = allEpisodes[currIndex];
                       const next = allEpisodes[currIndex + 1];
+                      if (!curr) return;
                       openPlayer(
                         d,
                         "tv",
@@ -168,10 +170,11 @@ export function details() {
           ),
         ),
       );
-      if (sn.options.length)
+      const firstSeason = sn.options.item(0);
+      if (firstSeason)
         sn.value = d.seasons!.find((s) => s.season_number === 1)
           ? "1"
-          : sn.options[0].value;
+          : firstSeason.value;
       sn.onchange = loadEps;
       loadEps();
 

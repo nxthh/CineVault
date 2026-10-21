@@ -1,8 +1,8 @@
-import { Bookmark, Moon, Search, Sun } from "lucide";
-import { Item, Media, api, titleOf, yearOf } from "../tmdb";
-import { errorBox } from "./feedback";
-import { h, icon, mount } from "./dom";
-import { href } from "./cards";
+import type { Item, Media } from "../tmdb.js";
+import { api, titleOf, yearOf } from "../tmdb.js";
+import { errorBox } from "./feedback.js";
+import { h, icon, mount } from "./dom.js";
+import { href } from "./cards.js";
 
 export function initChrome() {
   const root = document.documentElement;
@@ -13,7 +13,7 @@ export function initChrome() {
   });
   const syncThemeButton = () => {
     const isDark = root.classList.contains("dark");
-    themeButton.replaceChildren(icon(isDark ? Sun : Moon));
+    themeButton.replaceChildren(icon(isDark ? "sun" : "moon"));
     themeButton.setAttribute(
       "aria-label",
       isDark ? "Switch to light theme" : "Switch to dark theme",
@@ -32,11 +32,12 @@ export function initChrome() {
   };
 
   const currentPage = window.location.pathname.split("/").pop() || "index.html";
-  const links = [
+  const navItems: [string, string][] = [
     ["index.html", "Home"],
     ["movies.html", "Movies"],
     ["tv-shows.html", "TV Shows"],
-  ].map(([url, label]) =>
+  ];
+  const links = navItems.map(([url, label]) =>
     h(
       "a",
       {
@@ -224,7 +225,7 @@ export function initChrome() {
             (currentPage === "my-list.html" ? " nav-link-current" : ""),
           ...(currentPage === "my-list.html" ? { "aria-current": "page" } : {}),
         },
-        icon(Bookmark, "mr-1 inline size-4 align-[-3px]"),
+        icon("bookmark", "mr-1 inline size-4 align-[-3px]"),
         "My List",
       ),
       h(
@@ -234,7 +235,7 @@ export function initChrome() {
             "relative order-3 flex w-full items-center gap-2 sm:order-none sm:ml-auto sm:w-auto",
         },
         icon(
-          Search,
+          "search",
           "absolute left-3 top-1/2 size-4 -translate-y-1/2 text-zinc-400",
         ),
         input,

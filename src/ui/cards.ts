@@ -1,6 +1,7 @@
-import { Item, Media, img, titleOf, yearOf } from "../tmdb";
-import { h, icon } from "./dom";
-import { syncListButton, toggleList } from "./list";
+import type { Item, Media } from "../tmdb.js";
+import { img, titleOf, yearOf } from "../tmdb.js";
+import { h, icon } from "./dom.js";
+import { syncListButton, toggleList } from "./list.js";
 
 export const href = (type: Media, id: number) =>
   `details.html?type=${type}&id=${id}`;

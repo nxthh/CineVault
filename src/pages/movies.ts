@@ -1,16 +1,15 @@
-import { Item, Page, Media, api } from "../tmdb";
-import { load, row } from "../ui";
-import { heroFor } from "./shared";
-import { library } from "./library";
+import type { Item, Page, Media } from "../tmdb.js";
+import { api } from "../tmdb.js";
+import { load, row } from "../ui.js";
+import { heroFor } from "./shared.js";
+import { library } from "./library.js";
 
 export function movies() {
-  load("#c1", async () =>
-    heroFor(
-      "movie",
-      (await api<Page<Item>>("/movie/popular")).results[0].id,
-      "Watch Now",
-    ),
-  );
+  load("#c1", async () => {
+    const item = (await api<Page<Item>>("/movie/popular")).results[0];
+    if (!item) throw new Error("TMDB returned no popular movies.");
+    return heroFor("movie", item.id, "Watch Now");
+  });
   load("#c2", async () =>
     row(
       (await api<Page<Item>>("/movie/top_rated")).results.slice(0, 10),

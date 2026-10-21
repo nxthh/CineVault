@@ -1,7 +1,6 @@
-import { ChevronLeft, ChevronRight } from "lucide";
-import { Item, Media } from "../tmdb";
-import { h, icon } from "./dom";
-import { card } from "./cards";
+import type { Item, Media } from "../tmdb.js";
+import { h, icon } from "./dom.js";
+import { card } from "./cards.js";
 
 export const pagination = (
   page: number,
@@ -40,7 +39,7 @@ export const pagination = (
       "aria-label": "Previous page",
       disabled: String(page <= 1),
     },
-    icon(ChevronLeft),
+    icon("chevron-left"),
     "Previous",
   ) as HTMLButtonElement;
   previous.disabled = page <= 1;
@@ -60,7 +59,7 @@ export const pagination = (
       disabled: String(page >= totalPages),
     },
     "Next",
-    icon(ChevronRight),
+    icon("chevron-right"),
   ) as HTMLButtonElement;
   next.disabled = page >= totalPages;
   next.onclick = () => onChange(page + 1);

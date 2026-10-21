@@ -1,6 +1,7 @@
-import { Detail, Media, detail, img, titleOf, yearOf } from "../tmdb";
-import { h, toggleList, inList, href } from "../ui";
-import { openPlayer } from "../player";
+import type { Detail, Media } from "../tmdb.js";
+import { detail, img, titleOf, yearOf } from "../tmdb.js";
+import { h, toggleList, inList, href } from "../ui.js";
+import { openPlayer } from "../player.js";
 
 const btn = (label: string, fn: () => void, primary = false) => {
   const b = h(

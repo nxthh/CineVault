@@ -1,5 +1,6 @@
-import { Detail, Media, titleOf } from "./tmdb";
-import { h } from "./ui";
+import type { Detail, Media } from "./tmdb.js";
+import { titleOf } from "./tmdb.js";
+import { h } from "./ui.js";
 
 const providerUrl = (
   _t: Media,

@@ -1,1 +1,20 @@
-{"name":"cinevault","version":"1.0.0","private":true,"scripts":{"css":"tailwindcss -i src/input.css -o dist/styles.css --minify","js":"node build.mjs","build":"node gen.mjs && npm run css && npm run js && node deploy.mjs","dev":"node gen.mjs && tailwindcss -i src/input.css -o dist/styles.css --watch & node build.mjs --watch & npx serve .","typecheck":"tsc --noEmit"},"devDependencies":{"@tailwindcss/cli":"^4.3.3","esbuild":"^0.28.2","serve":"^10.0.2","tailwindcss":"^4.3.3","typescript":"^5.6.0"},"dependencies":{"lucide":"^1.57.0"}}
+{
+  "name": "cinevault",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "css": "tailwindcss -i src/input.css -o dist/styles.css --minify",
+    "css:watch": "tailwindcss -i src/input.css -o dist/styles.css --watch",
+    "build": "tsc && npm run css",
+    "dev": "tsc --watch",
+    "serve": "serve .",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.3.3",
+    "serve": "^10.0.2",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^5.6.0"
+  }
+}
