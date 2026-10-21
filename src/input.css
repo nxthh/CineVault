@@ -4,6 +4,8 @@
   --color-accent: #8b5cf6;
 }
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 .skeleton {
   @apply animate-pulse bg-zinc-300 dark:bg-zinc-800 rounded-lg;
 }
