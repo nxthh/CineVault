@@ -2,6 +2,9 @@ import type { Item, Page, Media } from "../tmdb.js";
 import { api, titleOf, yearOf } from "../tmdb.js";
 import { $, h, errorBox, grid, pagination, skeletons } from "../ui.js";
 
+const API_PAGE_SIZE = 20;
+const POSTER_PAGE_SIZE = 24;
+
 export async function library(type: Media) {
   const root = $("#c3");
   const state = {
@@ -114,13 +117,12 @@ export async function library(type: Media) {
     const request = ++requestId;
     out.replaceChildren(skeletons());
     try {
-      let p: Page<Item>;
-      if (state.q)
-        p = await api<Page<Item>>(`/search/${type}`, {
-          query: state.q,
-          page: state.page,
-        });
-      else {
+      const fetchApiPage = (page: number) => {
+        if (state.q)
+          return api<Page<Item>>(`/search/${type}`, {
+            query: state.q,
+            page,
+          });
         const sm: Record<string, string> = {
           title: type === "movie" ? "original_title.asc" : "original_name.asc",
           date:
@@ -133,7 +135,7 @@ export async function library(type: Media) {
         const sortBy = sm[state.sort];
         if (!sortBy) throw new Error("Invalid sort selection.");
         const o: Record<string, string | number> = {
-          page: state.page,
+          page,
           sort_by: sortBy,
           "vote_average.gte": state.rating,
           "vote_count.gte": state.sort === "rating" ? 200 : 0,
@@ -142,16 +144,34 @@ export async function library(type: Media) {
         if (state.year)
           o[type === "movie" ? "primary_release_year" : "first_air_date_year"] =
             state.year;
-        p = await api<Page<Item>>(`/discover/${type}`, o);
-      }
+        return api<Page<Item>>(`/discover/${type}`, o);
+      };
+      const firstApiPage =
+        Math.floor(((state.page - 1) * POSTER_PAGE_SIZE) / API_PAGE_SIZE) + 1;
+      const offset = ((state.page - 1) * POSTER_PAGE_SIZE) % API_PAGE_SIZE;
+      const first = await fetchApiPage(firstApiPage);
       if (request !== requestId) return;
-      items = p.results;
+      const lastApiPage = Math.min(firstApiPage + 1, first.total_pages, 500);
+      const results = [...first.results];
+      if (lastApiPage > firstApiPage) {
+        const next = await fetchApiPage(lastApiPage);
+        if (request !== requestId) return;
+        results.push(...next.results);
+      }
+      items = results.slice(offset, offset + POSTER_PAGE_SIZE);
       view();
       pager.replaceChildren(
-        pagination(state.page, Math.min(p.total_pages, 500), (next) => {
-          state.page = next;
-          fetchPage(false);
-        }),
+        pagination(
+          state.page,
+          Math.ceil(
+            (Math.min(first.total_pages, 500) * API_PAGE_SIZE) /
+              POSTER_PAGE_SIZE,
+          ),
+          (next) => {
+            state.page = next;
+            fetchPage(false);
+          },
+        ),
       );
     } catch (e) {
       if (request === requestId) {

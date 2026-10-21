@@ -44,7 +44,12 @@ const meta = (d: Detail, t: Media) =>
     .filter(Boolean)
     .join(" · ");
 
-export function hero(d: Detail, t: Media, watchLabel: string, withList = false) {
+export function hero(
+  d: Detail,
+  t: Media,
+  watchLabel: string,
+  withList = false,
+) {
   const bg = img(d.backdrop_path, "w1280");
   return h(
     "div",
